@@ -1,0 +1,430 @@
+package com.eatfair.app.ui.address
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Work
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.eatfair.app.constants.AddressType
+import com.eatfair.app.model.address.AddressDto
+import com.eatfair.app.model.address.LocationData
+import com.eatfair.app.ui.common.EFTopAppBar
+import com.eatfair.app.ui.theme.pinkVerticalGradient
+
+@Composable
+fun AddAddressDetailsScreen(
+    location: LocationData?,
+    addressId: Int,
+    locationViewModel: LocationViewModel,
+    onBackClick: () -> Unit = {},
+    onSaveAddress: (AddressDto) -> Unit = {}
+) {
+    var houseNumber by remember { mutableStateOf("") }
+    var apartmentRoad by remember { mutableStateOf("") }
+    var directions by remember { mutableStateOf("") }
+    var selectedType by remember { mutableStateOf(AddressType.HOME) }
+    var phoneNumber by remember { mutableStateOf("") }
+
+    LaunchedEffect(key1 = addressId) {
+        if (addressId != 0) {
+            val existingAddress = locationViewModel.getAddressById(addressId)
+            existingAddress?.let {
+                houseNumber = it.houseNumber
+                apartmentRoad = it.apartmentRoad
+                directions = it.directions ?: ""
+                phoneNumber = it.phoneNumber ?: ""
+                selectedType = it.type
+            }
+        }
+    }
+
+    val completeAddress =
+        location?.address ?: locationViewModel.getAddressById(addressId)?.completeAddress
+        ?: "Unknown Address"
+    val locationName =
+        location?.locationName ?: locationViewModel.getAddressById(addressId)?.locationName
+        ?: "Unknown Location"
+    val lat = location?.latitude ?: locationViewModel.getAddressById(addressId)?.latitude ?: 0.0
+    val lng = location?.longitude ?: locationViewModel.getAddressById(addressId)?.longitude ?: 0.0
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(pinkVerticalGradient())
+            .windowInsetsPadding(WindowInsets.statusBars)
+    ) {
+        // Top Section with Map
+//        Box(modifier = Modifier.height(120.dp)) {
+//            // Mini Map Preview
+//            Box(
+//                modifier = Modifier
+//                    .fillMaxSize()
+//                    .background(Color(0xFFF5F5F5)),
+//                contentAlignment = Alignment.Center
+//            ) {
+//                Icon(
+//                    imageVector = Icons.Default.Map,
+//                    contentDescription = "Map Preview",
+//                    modifier = Modifier.size(60.dp),
+//                    tint = Color.Gray.copy(alpha = 0.3f)
+//                )
+//            }
+//
+//            // Back Button
+//            IconButton(
+//                onClick = onBackClick,
+//                modifier = Modifier
+//                    .padding(start = 12.dp)
+//                    .background(
+//                        color = Color.White,
+//                        shape = RoundedCornerShape(8.dp)
+//                    ).size(38.dp)
+//            ) {
+//                Icon(
+//                    imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
+//                    contentDescription = "Back",
+//                    tint = Color.Black,
+//                    modifier = Modifier.size(20.dp).padding(start = 4.dp)
+//                )
+//            }
+//        }
+
+        EFTopAppBar(title = "Address Details", onBackClick = onBackClick)
+
+        // Scrollable Content
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 12.dp)
+        ) {
+            // Location Name
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Location",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+
+                Column {
+                    Text(
+                        text = locationName,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = completeAddress,
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Help Message
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(8.dp),
+                color = Color(0xFFFFF3E0)
+            ) {
+                Text(
+                    text = "A detailed address will help our Delivery Partner reach your doorstep easily",
+                    fontSize = 13.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // House/Flat/Block Number
+            AddressTextField(
+                value = houseNumber,
+                onValueChange = { houseNumber = it },
+                label = "HOUSE / FLAT / BLOCK NO.",
+                placeholder = "",
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+            AddressTextField(
+                value = apartmentRoad,
+                onValueChange = { apartmentRoad = it },
+                label = "APARTMENT / ROAD / AREA (RECOMMENDED)",
+                placeholder = ""
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+            AddressTextField(
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it },
+                label = "PHONE NUMBER",
+                placeholder = "",
+                keyboardType = KeyboardType.Phone,
+
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Directions to Reach
+            Text(
+                text = "DIRECTIONS TO REACH (OPTIONAL)",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color.Gray,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Text Directions
+            OutlinedTextField(
+                value = directions,
+                onValueChange = {
+                    if (it.length <= 100) directions = it
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp),
+                placeholder = {
+                    Text(
+                        text = "e.g. Ring the bell on the red gate",
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
+                },
+                colors = OutlinedTextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
+                    focusedBorderColor = Color(0xFFE0E0E0),
+                    unfocusedBorderColor = Color(0xFFE0E0E0)
+                ),
+                shape = RoundedCornerShape(8.dp),
+                textStyle = TextStyle(fontSize = 14.sp)
+            )
+
+            Text(
+                text = "${directions.length}/200",
+                fontSize = 12.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            // Save As Label
+            Text(
+                text = "SAVE AS",
+                fontSize = 12.sp,
+                color = Color.Gray,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
+
+            val addressTypes = AddressType.entries.toList()
+
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                addressTypes.forEach { type ->
+                    AddressTypeChip(
+                        icon = type.icon,
+                        label = type.name.lowercase().replaceFirstChar { it.uppercase() },
+                        isSelected = selectedType == type,
+                        onClick = { selectedType = type }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Save Button
+            Button(
+                onClick = {
+                    val newAddressDto = AddressDto(
+                        id = addressId,
+                        locationName = locationName,
+                        completeAddress = completeAddress,
+                        houseNumber = houseNumber,
+                        apartmentRoad = apartmentRoad,
+                        directions = directions.ifEmpty { null },
+                        type = selectedType,
+                        latitude = lat,
+                        longitude = lng,
+                        phoneNumber = phoneNumber
+                    )
+
+                    locationViewModel.saveAddress(newAddressDto)
+                    onSaveAddress(newAddressDto)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp),
+                enabled = houseNumber.isNotEmpty()
+            ) {
+                Text(
+                    text = if (houseNumber.isNotEmpty()) "SAVE ADDRESS" else "ENTER HOUSE / FLAT / BLOCK NO.",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+fun AddressTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    placeholder: String,
+    keyboardType: KeyboardType = KeyboardType.Text,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = label,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.Gray,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            placeholder = {
+                Text(
+                    text = placeholder,
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            },
+
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = Color(0xFFE0E0E0)
+            ),
+            shape = RoundedCornerShape(8.dp),
+            textStyle = TextStyle(fontSize = 14.sp)
+        )
+    }
+}
+
+@Composable
+fun AddressTypeChip(
+    icon: ImageVector,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier
+            .wrapContentWidth()
+            .height(32.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(24.dp),
+        color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else Color(0xFFF5F5F5),
+        border = if (isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary) else null
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .wrapContentHeight()
+                .wrapContentWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = label,
+                tint = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = label,
+                fontSize = 13.sp,
+                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Gray
+            )
+        }
+    }
+}
