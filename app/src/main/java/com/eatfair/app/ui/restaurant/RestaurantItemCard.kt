@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.eatfair.app.R
-import com.eatfair.app.model.restaurant.Restaurant
+import com.eatfair.shared.model.restaurant.Restaurant
 
 
 @Composable

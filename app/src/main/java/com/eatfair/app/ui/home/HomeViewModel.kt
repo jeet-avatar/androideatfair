@@ -1,22 +1,22 @@
 package com.eatfair.app.ui.home
 
 import android.net.Uri
-import androidx.compose.ui.graphics.Color
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eatfair.app.data.SessionManager
-import com.eatfair.app.data.repo.AddressRepo
-import com.eatfair.app.data.repo.RestaurantRepo
-import com.eatfair.app.model.address.AddressDto
-import com.eatfair.app.model.home.CarouselItem
-import com.eatfair.app.model.home.Category
-import com.eatfair.app.model.home.FoodItem
-import com.eatfair.app.model.restaurant.Restaurant
+import com.eatfair.shared.data.local.SessionManager
+import com.eatfair.shared.data.repo.AddressRepo
+import com.eatfair.shared.data.repo.RestaurantRepo
+import com.eatfair.shared.model.address.AddressDto
+import com.eatfair.shared.model.home.CarouselItem
+import com.eatfair.shared.model.home.Category
+import com.eatfair.shared.model.home.FoodItem
+import com.eatfair.shared.model.restaurant.Restaurant
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -47,47 +47,6 @@ class HomeViewModel @Inject constructor(
     private val _defaultAddress = MutableStateFlow<AddressDto?>(null)
     val defaultAddress = _defaultAddress.asStateFlow()
 
-    val carouselItemsSample = listOf(
-        CarouselItem(
-            id = 1,
-            title = "Flavors in Karbooz",
-            subtitle = "Spice Up Your Day",
-            description = "Taste Mexico!\nCraving Bold Mexican Flavors?",
-            backgroundColor = Color(0xFFFFB6D9)
-        ),
-        CarouselItem(
-            id = 2,
-            title = "Asian Delights",
-            subtitle = "Experience The East",
-            description = "Authentic Asian\nCuisine Awaits!",
-            backgroundColor = Color(0xFFB6E5FF)
-        ),
-        CarouselItem(
-            id = 3,
-            title = "Italian Classics",
-            subtitle = "Taste of Italy",
-            description = "Fresh Pasta &\nPizza Daily!",
-            backgroundColor = Color(0xFFFFE5B6)
-        )
-    )
-
-    val categoriesSample = listOf(
-        Category(1, "Tacos", "🌮", true),
-        Category(2, "Zephyr", "🧁"),
-        Category(3, "Burgers", "🍔"),
-        Category(4, "Beauty", "🍜"),
-        Category(5, "Pizza", "🍕"),
-        Category(6, "Sushi", "🍱"),
-        Category(7, "Dessert", "🍰")
-    )
-
-    val topRatedFoodSample = listOf(
-        FoodItem(1, "Chicken Tacos", 12.99, 4.8),
-        FoodItem(2, "Beef Burrito", 12.99, 4.7),
-        FoodItem(3, "Veggie Bowl", 10.99, 4.9),
-        FoodItem(4, "Fish Tacos", 13.99, 4.6)
-    )
-
     init {
         checkProfileImage()
         fetchCarouselItems()
@@ -115,23 +74,27 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun fetchTopRatedFood() {
-        _topRatedFood.value = topRatedFoodSample
+        viewModelScope.launch {
+            _topRatedFood.value = restaurantRepo.getTopRatedFood().first()
+        }
     }
 
     private fun fetchCategories() {
-        _categories.value = categoriesSample
+        viewModelScope.launch {
+            _categories.value = restaurantRepo.getCategories().first()
+        }
     }
 
     private fun fetchCarouselItems() {
-        _carouselItems.value = carouselItemsSample
+        viewModelScope.launch {
+            _carouselItems.value = restaurantRepo.getCarouselItems().first()
+        }
     }
 
 
     fun fetchRestaurants() {
         viewModelScope.launch {
-            restaurantRepo.getRestaurants().collect {
-                _restaurants.value = it
-            }
+            _restaurants.value = restaurantRepo.getRestaurants().first()
         }
     }
 

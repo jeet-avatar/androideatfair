@@ -36,9 +36,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eatfair.app.model.SearchResultDto
 import com.eatfair.app.ui.theme.pinkVerticalGradient
-import com.eatfair.app.ui.theme.primaryVerticalGradient
+import com.eatfair.shared.model.search.SearchResultDto
 
 @Composable
 fun SearchScreen(
@@ -51,6 +50,8 @@ fun SearchScreen(
 ) {
     val query by searchViewModel.searchQuery.collectAsState()
     val results by searchViewModel.searchResults.collectAsState()
+    val recentSearches by searchViewModel.recentSearches.collectAsState()
+    val popularCuisines by searchViewModel.popularCuisines.collectAsState()
 
     val focusRequester = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -107,7 +108,7 @@ fun SearchScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        searchViewModel.recentSearches.forEach { search ->
+                        recentSearches.forEach { search ->
                             SearchChipMaterial3(
                                 text = search,
                                 onClick = { onRecentSearchClick(search) }
@@ -132,7 +133,7 @@ fun SearchScreen(
                         horizontalArrangement = Arrangement.spacedBy(10.dp),
 //                        verticalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
-                        searchViewModel.popularCuisines.forEach { cuisine ->
+                        popularCuisines.forEach { cuisine ->
                             SearchChipMaterial3(
                                 text = cuisine,
                                 onClick = { onCuisineClick(cuisine) }

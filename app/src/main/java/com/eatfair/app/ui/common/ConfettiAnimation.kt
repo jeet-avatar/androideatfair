@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.rotate
-import com.eatfair.app.model.ConfettiParticle
+import com.eatfair.shared.model.ConfettiParticle
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 

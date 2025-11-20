@@ -67,8 +67,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.eatfair.app.R
-import com.eatfair.app.model.restaurant.CartItem
-import com.eatfair.app.model.restaurant.MenuItem
+import com.eatfair.shared.model.restaurant.CartItem
+import com.eatfair.shared.model.restaurant.MenuItem
 import com.eatfair.app.ui.cart.CartViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

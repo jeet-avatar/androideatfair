@@ -81,13 +81,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eatfair.app.constants.OrderStatus
-import com.eatfair.app.model.order.DeliveryPartner
-import com.eatfair.app.model.order.OrderTracking
-import com.eatfair.app.model.order.PickUpLocation
-import com.eatfair.app.model.restaurant.CartItem
-import com.eatfair.app.model.restaurant.MenuItem
-import com.eatfair.app.model.restaurant.Restaurant
+import com.eatfair.shared.constants.AddressType
+import com.eatfair.shared.constants.OrderStatus
+import com.eatfair.shared.model.address.AddressDto
+import com.eatfair.shared.model.order.DeliveryPartner
+import com.eatfair.shared.model.order.OrderTracking
+import com.eatfair.shared.model.order.PickUpLocation
+import com.eatfair.shared.model.restaurant.CartItem
+import com.eatfair.shared.model.restaurant.MenuItem
+import com.eatfair.shared.model.restaurant.Restaurant
 import com.eatfair.app.ui.common.ConfettiAnimation
 import com.eatfair.app.ui.order.OrderDetailRow
 import com.eatfair.app.ui.theme.primaryVerticalGradient
@@ -144,8 +146,8 @@ fun CartScreen(
                     restaurant = restaurant,
                     status = OrderStatus.ORDER_PLACED,
                     deliveryPartner = DeliveryPartner(
-                        name = "Aman Kumar",
-                        phone = "+91-98765*****"
+                        name = "Jithesh Manoharan",
+                        phone = "+1-949-123-4567"
                     ),
                     estimatedTime = "25 mins",
                     pickupLocation = PickUpLocation(
@@ -153,7 +155,17 @@ fun CartScreen(
                         lat = restaurant?.latitude ?: 0.0,
                         lng = restaurant?.longitude ?: 0.0
                     ),
-                    deliveryLocation = deliveryAddress,
+                    deliveryLocation = AddressDto(
+                        locationName = "Home",
+                        completeAddress = "12 Teaberry Lane, Rancho Santa Margarita, CA 92688",
+                        houseNumber = "12",
+                        apartmentRoad = "Teaberry Lane",
+                        directions = "",
+                        type = AddressType.HOME,
+                        latitude = 33.6358,
+                        longitude = -117.6045,
+                        phoneNumber = "+1-949-123-4567"
+                    ),
                     deliveryInstructions = restaurantNote
                 )
 

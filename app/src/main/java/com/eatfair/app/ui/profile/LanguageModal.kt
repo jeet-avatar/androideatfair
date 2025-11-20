@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eatfair.app.model.LanguageDto
+import com.eatfair.shared.model.LanguageDto
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

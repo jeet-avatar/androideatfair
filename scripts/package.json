@@ -1,0 +1,12 @@
+{
+    "name": "eatfair-firestore-setup",
+    "version": "1.0.0",
+    "description": "Script to populate Firestore with sample data",
+    "main": "populate-firestore.js",
+    "scripts": {
+        "populate": "node populate-firestore.js"
+    },
+    "dependencies": {
+        "firebase-admin": "^12.0.0"
+    }
+}

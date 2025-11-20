@@ -1,7 +1,7 @@
 package com.eatfair.app.data.repo
 
 import com.eatfair.app.data.dao.AddressDao
-import com.eatfair.app.model.address.AddressDto
+import com.eatfair.shared.model.address.AddressDto
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton

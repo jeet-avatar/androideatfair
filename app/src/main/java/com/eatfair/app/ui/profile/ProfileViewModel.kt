@@ -1,6 +1,6 @@
 package com.eatfair.app.ui.profile
 
-import com.eatfair.app.data.SessionManager
+import com.eatfair.shared.data.local.SessionManager
 import android.net.Uri
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
@@ -20,6 +20,9 @@ class ProfileViewModel @Inject constructor(
 
     private val _profileImageUri = MutableStateFlow<Uri?>(null)
     val profileImageUri = _profileImageUri.asStateFlow()
+
+    val userNameFlow = sessionManager.userNameFlow
+    val userEmailFlow = sessionManager.userEmailFlow
 
     init {
         sessionManager.profileImageUriFlow

@@ -62,9 +62,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eatfair.app.constants.AddressType
-import com.eatfair.app.model.address.AddressDto
-import com.eatfair.app.model.address.LocationData
+import com.eatfair.shared.constants.AddressType
+import com.eatfair.shared.model.address.AddressDto
+import com.eatfair.shared.model.address.LocationData
 import com.eatfair.app.ui.common.EFTopAppBar
 import com.eatfair.app.ui.theme.pinkVerticalGradient
 

@@ -1,10 +1,10 @@
 package com.eatfair.app.di
 
-import com.eatfair.app.data.SessionManager
+
 import android.content.Context
 import androidx.room.Room
 import com.eatfair.app.data.AppDatabase
-import com.eatfair.app.data.dao.AddressDao
+import com.eatfair.shared.data.dao.AddressDao
 //import com.google.firebase.auth.FirebaseAuth
 import dagger.Module
 import dagger.Provides
@@ -27,16 +27,7 @@ object AppModule {
 //        return FirebaseAuth.getInstance()
 //    }
 
-    /**
-     * Provides a Singleton instance of SessionManager.
-     * Hilt automatically injects the ApplicationContext, which is necessary for DataStore.
-     */
-    @Provides
-    @Singleton
-    fun provideSessionManager(@ApplicationContext context: Context): SessionManager {
-        // Hilt will automatically look up the application context and pass it here.
-        return SessionManager(context)
-    }
+
 
     @Provides
     @Singleton

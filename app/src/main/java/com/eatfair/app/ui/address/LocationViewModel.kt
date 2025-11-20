@@ -4,8 +4,8 @@ package com.eatfair.app.ui.address
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eatfair.app.data.repo.AddressRepo
-import com.eatfair.app.model.address.AddressDto
+import com.eatfair.shared.data.repo.AddressRepo
+import com.eatfair.shared.model.address.AddressDto
 //import com.google.android.libraries.places.api.Places
 //import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 //import com.google.android.libraries.places.api.model.Place

@@ -1,0 +1,4 @@
+# Firestore population scripts
+serviceAccountKey.json
+node_modules/
+package-lock.json

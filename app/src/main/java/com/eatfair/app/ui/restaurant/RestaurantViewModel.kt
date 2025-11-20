@@ -1,20 +1,20 @@
 package com.eatfair.app.ui.restaurant
 
-import androidx.activity.result.launch
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eatfair.app.data.repo.AddressRepo
-import com.eatfair.app.data.repo.RestaurantRepo
-import com.eatfair.app.model.address.AddressDto
-import com.eatfair.app.model.restaurant.MenuItem
-import com.eatfair.app.model.restaurant.Restaurant
+import com.eatfair.shared.data.repo.AddressRepo
+import com.eatfair.shared.data.repo.RestaurantRepo
+import com.eatfair.shared.model.address.AddressDto
+import com.eatfair.shared.model.restaurant.MenuItem
+import com.eatfair.shared.model.restaurant.Restaurant
 import com.eatfair.app.ui.cart.CartViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -55,21 +55,15 @@ class RestaurantViewModel @Inject constructor(
     private fun loadRestaurantData(id: Int) {
         viewModelScope.launch {
             // Use the repository to get data
-            restaurantRepo.getRestaurantById(id).collect { restaurant ->
-                _selectedRestaurant.value = restaurant
-            }
+            _selectedRestaurant.value = restaurantRepo.getRestaurantById(id)
 
-            restaurantRepo.getMenuItems(id).collect { items ->
-                _menuItems.value = items
-            }
+            _menuItems.value = restaurantRepo.getMenuItemsForRestaurant(id)
         }
     }
 
     fun fetchRestaurants() {
         viewModelScope.launch {
-            restaurantRepo.getRestaurants().collect {
-                _restaurants.value = it
-            }
+            _restaurants.value = restaurantRepo.getRestaurants().first()
         }
     }
 

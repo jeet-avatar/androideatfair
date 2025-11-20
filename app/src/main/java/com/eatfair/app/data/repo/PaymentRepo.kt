@@ -1,7 +1,7 @@
 package com.eatfair.app.data.repo
 
 import android.util.Log
-import com.eatfair.app.model.payment.PaymentSheetKeys
+import com.eatfair.shared.model.payment.PaymentSheetKeys
 import jakarta.inject.Inject
 
 // This requires a networking library like Retrofit or Ktor.

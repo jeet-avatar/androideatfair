@@ -64,7 +64,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
 import com.eatfair.app.R
-import com.eatfair.app.model.order.OrderTracking
+import com.eatfair.shared.model.order.OrderTracking
 import com.eatfair.app.ui.cart.CartViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -235,9 +235,10 @@ fun LiveTrackingMap(
         }
         val homeLocation =
             remember {
+                val location = order.deliveryLocation
                 LatLng(
-                    order.deliveryLocation?.latitude!!,
-                    order.deliveryLocation.longitude
+                    location?.latitude ?: 0.0,
+                    location?.longitude ?: 0.0
                 )
             }
 

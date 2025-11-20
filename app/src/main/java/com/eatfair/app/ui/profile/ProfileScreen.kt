@@ -72,8 +72,6 @@ import java.io.File
 @Composable
 fun ProfileScreen(
     profileViewModel: ProfileViewModel,
-    userName: String = "Manish Agrawal",
-    userEmail: String = "manish.agrawal.np@gmail.com",
     onBackClick: () -> Unit = {},
     onSavedAddressClick: () -> Unit = {},
     onEditProfileClick: () -> Unit = {},
@@ -85,6 +83,8 @@ fun ProfileScreen(
 ) {
 
     val profileImageUri by profileViewModel.profileImageUri.collectAsState()
+    val userName by profileViewModel.userNameFlow.collectAsState(initial = "")
+    val userEmail by profileViewModel.userEmailFlow.collectAsState(initial = "")
 
     var tempCameraUri by remember { mutableStateOf<Uri?>(null) }
     val context = LocalContext.current
@@ -131,8 +131,8 @@ fun ProfileScreen(
 
             // Profile Image and Info
             ProfileHeader(
-                userName = userName,
-                userEmail = userEmail,
+                userName = userName ?: "",
+                userEmail = userEmail ?: "",
                 profileImageUri = profileImageUri,
 //                onChangePhotoClick = {
 //                    photoPickerLauncher.launch(

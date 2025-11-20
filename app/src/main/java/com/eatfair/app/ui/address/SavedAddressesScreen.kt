@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eatfair.app.model.address.AddressDto
+import com.eatfair.shared.model.address.AddressDto
 import com.eatfair.app.ui.common.EFTopAppBar
 import com.eatfair.app.ui.theme.pinkVerticalGradient
 import com.eatfair.app.ui.theme.primaryVerticalGradient

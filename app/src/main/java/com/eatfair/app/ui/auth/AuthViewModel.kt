@@ -2,7 +2,7 @@ package com.eatfair.app.ui.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.eatfair.app.data.SessionManager
+import com.eatfair.shared.data.local.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,8 +56,8 @@ class AuthViewModel @Inject constructor(
                 delay(1000)
 
                 // On success
-                sessionManager.saveSession("Manish Id")
-                _authState.value = AuthState.Authenticated("manish_id")
+                sessionManager.saveSession(email, email, email)
+                _authState.value = AuthState.Authenticated(email)
 
             } catch (e: Exception) {
 
@@ -78,8 +78,8 @@ class AuthViewModel @Inject constructor(
                 delay(1000)
 
                 // On success
-                sessionManager.saveSession("Manish Id")
-                _authState.value = AuthState.Authenticated("manish_id")
+                sessionManager.saveSession(email, name, email)
+                _authState.value = AuthState.Authenticated(email)
             } catch (e: Exception) {
                 sessionManager.clearSession()
                 _authState.value = AuthState.Error(e.message ?: "Unknown error")

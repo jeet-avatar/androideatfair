@@ -6,7 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
-import com.eatfair.app.model.address.AddressDto
+import com.eatfair.shared.model.address.AddressDto
 import kotlinx.coroutines.flow.Flow
 
 @Dao

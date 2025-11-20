@@ -1,0 +1,46 @@
+EatFair Delivery - Beta Version
+
+Build Information:
+------------------
+Version: 1.0.0-beta
+Build Date: 2025-11-19 18:57:40
+Build Type: Debug
+Firebase Project: eatfair-40f09
+
+APK Details:
+------------
+Customer App: app-debug.apk (~32 MB)
+Partner App: partner-debug.apk (~23 MB)
+Delivery App: orderapp-debug.apk (~22 MB)
+
+Package Names:
+--------------
+Customer: com.eatfair.app
+Partner: com.eatfair.partner
+Delivery: com.eatfair.orderapp
+
+Backend:
+--------
+Authentication: Firebase Auth (Email/Password)
+Database: Cloud Firestore (Test Mode)
+Storage: Firebase Cloud Storage
+Maps: Google Maps API
+
+Known Issues:
+-------------
+- Test mode security (acceptable for beta)
+- Dummy payment system
+- Limited push notifications
+- Basic delivery app features
+- Limited restaurant data (2 restaurants)
+
+Testing Period:
+---------------
+Start: 2025-11-19
+Duration: 2-4 weeks
+Expected Testers: 10-50 users
+
+Support:
+--------
+Email: support@eatfair.com
+Feedback Form: [To be added]

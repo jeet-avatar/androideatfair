@@ -38,7 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.eatfair.app.model.notification.NotificationItem
+import com.eatfair.shared.model.notification.NotificationItem
 import com.eatfair.app.ui.common.EFTopAppBar
 import com.eatfair.app.ui.theme.primaryVerticalGradient
 import kotlin.collections.forEach

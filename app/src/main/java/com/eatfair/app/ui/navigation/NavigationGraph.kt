@@ -17,7 +17,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.eatfair.app.model.address.LocationData
+import com.eatfair.shared.model.address.LocationData
 import com.eatfair.app.ui.address.AddAddressDetailsScreen
 import com.eatfair.app.ui.address.LocationMapScreen
 import com.eatfair.app.ui.address.LocationViewModel

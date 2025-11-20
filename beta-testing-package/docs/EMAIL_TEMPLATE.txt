@@ -1,0 +1,61 @@
+Subject: EatFair Delivery - Beta Testing Invitation 🚀
+
+Hi [Tester Name],
+
+Thank you for joining our EatFair Delivery beta testing program!
+
+WHAT IS EATFAIR DELIVERY?
+A complete food delivery ecosystem with three interconnected apps:
+• Customer App - Browse restaurants and order food
+• Partner App - Manage restaurant orders and menu
+• Delivery App - Handle delivery tasks
+
+WHAT YOU'LL BE TESTING:
+✓ User registration and authentication
+✓ Restaurant browsing and search
+✓ Order placement and tracking
+✓ Real-time order updates
+✓ Partner order management
+✓ Delivery coordination
+
+INSTALLATION:
+1. Download the attached ZIP file
+2. Extract the three APK files
+3. Install all three on your Android device
+4. Follow the BETA_TESTER_GUIDE.md for detailed instructions
+
+TESTING PERIOD:
+• Duration: 2-4 weeks
+• Start Date: [Date]
+• Expected Time: 2-3 hours total
+
+FEEDBACK:
+Please report bugs, issues, and suggestions via:
+📝 Feedback Form: [Your form link]
+📧 Email: support@eatfair.com
+
+WHAT'S IN IT FOR YOU:
+🎁 Early access to the platform
+💰 Exclusive launch discounts
+🌟 Recognition as a founding tester
+📣 Direct influence on features
+
+IMPORTANT NOTES:
+⚠️ This is a BETA version with test data
+⚠️ No real payments will be processed
+⚠️ Data may be reset during testing
+⚠️ Some features are still in development
+
+SUPPORT:
+If you have any questions or encounter issues:
+• Email: support@eatfair.com
+• Response time: Within 24 hours
+
+Thank you for helping us build something amazing!
+
+Best regards,
+The EatFair Team
+
+---
+Attached:
+- beta-testing-package.zip (contains APKs and documentation)
