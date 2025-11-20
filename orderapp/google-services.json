@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "962618426886",
-    "project_id": "eatfair-40f09",
-    "storage_bucket": "eatfair-40f09.firebasestorage.app"
+    "project_number": "107524350806",
+    "project_id": "eatfair-app",
+    "storage_bucket": "eatfair-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:962618426886:android:8d22a4e420029730046587",
+        "mobilesdk_app_id": "1:107524350806:android:0bd156d8e81170ac83ecf7",
         "android_client_info": {
           "package_name": "com.eatfair.app"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyADVGiW0E82pbxPUNz2J3eO24jIQLoPkS8"
+          "current_key": "AIzaSyAepfv31h7GlkJE3oWT-hfrfkQZQAAq13M"
         }
       ],
       "services": {
@@ -26,7 +26,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:962618426886:android:243536f3c05c3469046587",
+        "mobilesdk_app_id": "1:107524350806:android:169afce9e48676bb83ecf7",
         "android_client_info": {
           "package_name": "com.eatfair.orderapp"
         }
@@ -34,7 +34,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyADVGiW0E82pbxPUNz2J3eO24jIQLoPkS8"
+          "current_key": "AIzaSyAepfv31h7GlkJE3oWT-hfrfkQZQAAq13M"
         }
       ],
       "services": {
@@ -45,7 +45,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:962618426886:android:19eefd2027daefa1046587",
+        "mobilesdk_app_id": "1:107524350806:android:848e20410a71543283ecf7",
         "android_client_info": {
           "package_name": "com.eatfair.partner"
         }
@@ -53,7 +53,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyADVGiW0E82pbxPUNz2J3eO24jIQLoPkS8"
+          "current_key": "AIzaSyAepfv31h7GlkJE3oWT-hfrfkQZQAAq13M"
         }
       ],
       "services": {
