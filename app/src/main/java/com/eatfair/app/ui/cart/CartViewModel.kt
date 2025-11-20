@@ -7,12 +7,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eatfair.shared.data.repo.AddressRepo
 import com.eatfair.app.data.repo.PaymentRepo
+import com.eatfair.shared.data.local.SessionManager
 import com.eatfair.shared.model.address.AddressDto
 import com.eatfair.shared.model.order.OrderTracking
 import com.eatfair.shared.model.payment.PaymentSheetKeys
 import com.eatfair.shared.model.restaurant.CartItem
 import com.eatfair.shared.model.restaurant.MenuItem
 import com.eatfair.shared.model.restaurant.Restaurant
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -21,12 +24,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
     private val addressRepo: AddressRepo,
-    private val paymentRepo: PaymentRepo
+    private val paymentRepo: PaymentRepo,
+    private val sessionManager: SessionManager,
+    private val firestore: FirebaseFirestore
 ) : ViewModel() {
 
     private val _cartItems = MutableStateFlow<List<CartItem>>(emptyList())
@@ -136,11 +142,75 @@ class CartViewModel @Inject constructor(
     }
 
     fun onOrderPlacedSuccessfully(order: OrderTracking) {
-        _activeOrder.value = order
-
         viewModelScope.launch {
-            delay(1000)
-//        _showOrderSuccessSheet.value = true
+            try {
+                val userId = sessionManager.getUserId() ?: "anonymous"
+                val restaurant = _cartRestaurant.value
+                val items = _cartItems.value
+                
+                // Calculate total amount
+                val subtotal = items.sumOf { (it.menuItem.price * it.quantity).toDouble() }
+                val deliveryFee = 5.0
+                val tax = subtotal * 0.08
+                val totalAmount = subtotal + deliveryFee + tax
+                
+                // Create order data for Firestore
+                val orderData = hashMapOf(
+                    "orderId" to order.orderId,
+                    "customerId" to userId,
+                    "customerName" to (sessionManager.getUserName() ?: "Customer"),
+                    "customerEmail" to (sessionManager.getUserEmail() ?: ""),
+                    "restaurantId" to (restaurant?.id ?: 0),
+                    "restaurantName" to (restaurant?.name ?: ""),
+                    "restaurantAddress" to (restaurant?.address ?: ""),
+                    "restaurantLatitude" to (restaurant?.latitude ?: 0.0),
+                    "restaurantLongitude" to (restaurant?.longitude ?: 0.0),
+                    "items" to items.map { cartItem ->
+                        hashMapOf(
+                            "id" to cartItem.menuItem.id,
+                            "name" to cartItem.menuItem.name,
+                            "price" to cartItem.menuItem.price,
+                            "quantity" to cartItem.quantity
+                        )
+                    },
+                    "subtotal" to subtotal,
+                    "deliveryFee" to deliveryFee,
+                    "tax" to tax,
+                    "totalAmount" to totalAmount,
+                    "status" to "ORDER_PLACED",
+                    "deliveryAddress" to hashMapOf(
+                        "completeAddress" to (order.deliveryLocation?.completeAddress ?: ""),
+                        "houseNumber" to (order.deliveryLocation?.houseNumber ?: ""),
+                        "apartmentRoad" to (order.deliveryLocation?.apartmentRoad ?: ""),
+                        "latitude" to (order.deliveryLocation?.latitude ?: 0.0),
+                        "longitude" to (order.deliveryLocation?.longitude ?: 0.0),
+                        "phoneNumber" to (order.deliveryLocation?.phoneNumber ?: "")
+                    ),
+                    "deliveryInstructions" to (order.deliveryInstructions ?: ""),
+                    "estimatedDeliveryTime" to order.estimatedTime,
+                    "createdAt" to FieldValue.serverTimestamp(),
+                    "updatedAt" to FieldValue.serverTimestamp(),
+                    "driverId" to null,
+                    "driverName" to null,
+                    "isDelayed" to false
+                )
+                
+                // Save order to Firestore
+                firestore.collection("orders")
+                    .document(order.orderId)
+                    .set(orderData)
+                    .await()
+                
+                // Update local state
+                _activeOrder.value = order
+                
+                // Clear cart after successful order
+                clearCart()
+                
+            } catch (e: Exception) {
+                // Handle error - you might want to show an error message to the user
+                println("Error saving order: ${e.message}")
+            }
         }
     }
 

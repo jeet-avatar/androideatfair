@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
@@ -82,5 +83,18 @@ class SessionManager @Inject constructor(
         context.dataStore.edit { preferences ->
             preferences.clear() // Clears all auth data
         }
+    }
+    
+    // Helper functions to get current values
+    suspend fun getUserId(): String? {
+        return firebaseAuth.currentUser?.uid ?: context.dataStore.data.map { it[USER_ID] }.first()
+    }
+    
+    suspend fun getUserName(): String? {
+        return firebaseAuth.currentUser?.displayName ?: context.dataStore.data.map { it[USER_NAME] }.first()
+    }
+    
+    suspend fun getUserEmail(): String? {
+        return firebaseAuth.currentUser?.email ?: context.dataStore.data.map { it[USER_EMAIL] }.first()
     }
 }

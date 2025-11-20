@@ -6,12 +6,17 @@ import com.eatfair.orderapp.model.LocationDto
 import com.eatfair.orderapp.model.order.DeliveryOrder
 import com.eatfair.orderapp.model.order.OrderItem
 import com.eatfair.orderapp.ui.screens.home.DeliveryStats
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldValue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class DeliveryRepoImpl @Inject constructor() : DeliveryRepo {
+class DeliveryRepoImpl @Inject constructor(
+    private val firestore: FirebaseFirestore
+) : DeliveryRepo {
 
     private var currentOrder: DeliveryOrder? = createMockOrder()
 
@@ -21,9 +26,34 @@ class DeliveryRepoImpl @Inject constructor() : DeliveryRepo {
     }
 
     override suspend fun updateOrderStatus(orderId: String, status: OrderStatus): Result<Unit> {
-        delay(500)
-        currentOrder = currentOrder?.copy(status = status)
-        return Result.success(Unit)
+        return try {
+            // Map driver app status to shared status
+            val firestoreStatus = when (status) {
+                OrderStatus.PENDING -> "ORDER_PLACED"
+                OrderStatus.EN_ROUTE_TO_PICKUP -> "PREPARING"
+                OrderStatus.ARRIVED_AT_PICKUP -> "PREPARING"
+                OrderStatus.PICKED_UP -> "OUT_FOR_DELIVERY"
+                OrderStatus.EN_ROUTE_TO_DELIVERY -> "OUT_FOR_DELIVERY"
+                OrderStatus.ARRIVED_AT_DELIVERY -> "OUT_FOR_DELIVERY"
+                OrderStatus.DELIVERED -> "DELIVERED"
+            }
+            
+            // Update in Firestore
+            firestore.collection("orders")
+                .document(orderId)
+                .update(
+                    "status", firestoreStatus,
+                    "updatedAt", FieldValue.serverTimestamp()
+                )
+                .await()
+            
+            // Update local state
+            currentOrder = currentOrder?.copy(status = status)
+            Result.success(Unit)
+        } catch (e: Exception) {
+            println("Error updating order status: ${e.message}")
+            Result.failure(e)
+        }
     }
 
     override suspend fun getCurrentOrderStatus(orderId: String): OrderStatus {

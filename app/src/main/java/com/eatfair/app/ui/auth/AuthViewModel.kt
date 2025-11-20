@@ -3,12 +3,14 @@ package com.eatfair.app.ui.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eatfair.shared.data.local.SessionManager
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 sealed class AuthState {
@@ -21,7 +23,9 @@ sealed class AuthState {
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val sessionManager: SessionManager
+    private val sessionManager: SessionManager,
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Initial)
@@ -50,19 +54,21 @@ class AuthViewModel @Inject constructor(
             _authState.value = AuthState.Loading
 
             try {
-                // val result = authRepository.login(email, password)
-
-                // Simulate API call
-                delay(1000)
-
-                // On success
-                sessionManager.saveSession(email, email, email)
+                // Sign in with Firebase Authentication
+                val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
+                val userId = result.user?.uid ?: throw Exception("User ID is null")
+                
+                // Fetch user profile from Firestore
+                val userDoc = firestore.collection("users").document(userId).get().await()
+                val userName = userDoc.getString("name") ?: email
+                
+                // Save session locally
+                sessionManager.saveSession(userId, userName, email)
                 _authState.value = AuthState.Authenticated(email)
 
             } catch (e: Exception) {
-
                 sessionManager.clearSession()
-                _authState.value = AuthState.Error(e.message ?: "Unknown error")
+                _authState.value = AuthState.Error(e.message ?: "Login failed")
             }
         }
     }
@@ -72,17 +78,30 @@ class AuthViewModel @Inject constructor(
             _authState.value = AuthState.Loading
 
             try {
-                // val result = authRepository.signUp(email, password, name, phone, zipCode)
+                // Create Firebase Authentication user
+                val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+                val userId = result.user?.uid ?: throw Exception("User ID is null")
+                
+                // Create user profile in Firestore
+                val userProfile = hashMapOf(
+                    "userId" to userId,
+                    "name" to name,
+                    "email" to email,
+                    "phone" to phone,
+                    "zipCode" to zipCode,
+                    "role" to "customer",
+                    "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp(),
+                    "updatedAt" to com.google.firebase.firestore.FieldValue.serverTimestamp()
+                )
+                
+                firestore.collection("users").document(userId).set(userProfile).await()
 
-                // Simulate API call
-                delay(1000)
-
-                // On success
-                sessionManager.saveSession(email, name, email)
+                // Save session locally
+                sessionManager.saveSession(userId, name, email)
                 _authState.value = AuthState.Authenticated(email)
             } catch (e: Exception) {
                 sessionManager.clearSession()
-                _authState.value = AuthState.Error(e.message ?: "Unknown error")
+                _authState.value = AuthState.Error(e.message ?: "Signup failed")
             }
         }
     }

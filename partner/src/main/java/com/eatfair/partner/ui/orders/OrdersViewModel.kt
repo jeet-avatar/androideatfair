@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.eatfair.shared.constants.OrderStatus
 import com.eatfair.shared.data.repo.OrderRepo
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldValue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 data class OrdersUiState(
@@ -19,7 +22,8 @@ data class OrdersUiState(
 
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
-    private val orderRepo: OrderRepo
+    private val orderRepo: OrderRepo,
+    private val firestore: FirebaseFirestore
 ) : ViewModel() {
     
     private val _uiState = MutableStateFlow(OrdersUiState())
@@ -55,25 +59,78 @@ class OrdersViewModel @Inject constructor(
     }
     
     fun acceptOrder(orderId: Long) {
-        // In a real app, this would call a repository function to update the status
-        updateLocalOrderStatus(orderId, OrderStatus.PREPARING)
+        viewModelScope.launch {
+            try {
+                val orderIdStr = "EF$orderId"
+                firestore.collection("orders")
+                    .document(orderIdStr)
+                    .update(
+                        "status", "PREPARING",
+                        "updatedAt", FieldValue.serverTimestamp()
+                    )
+                    .await()
+                // Local state will update via real-time listener
+            } catch (e: Exception) {
+                println("Error accepting order: ${e.message}")
+            }
+        }
     }
     
     fun rejectOrder(orderId: Long) {
-        // In a real app, this would call a repository function
-        _uiState.update { state ->
-            state.copy(
-                orders = state.orders.filter { it.id != orderId }
-            )
+        viewModelScope.launch {
+            try {
+                val orderIdStr = "EF$orderId"
+                firestore.collection("orders")
+                    .document(orderIdStr)
+                    .update(
+                        "status", "REJECTED",
+                        "updatedAt", FieldValue.serverTimestamp()
+                    )
+                    .await()
+                // Remove from local state
+                _uiState.update { state ->
+                    state.copy(
+                        orders = state.orders.filter { it.id != orderId }
+                    )
+                }
+            } catch (e: Exception) {
+                println("Error rejecting order: ${e.message}")
+            }
         }
     }
     
     fun markAsPreparing(orderId: Long) {
-        updateLocalOrderStatus(orderId, OrderStatus.PREPARING)
+        viewModelScope.launch {
+            try {
+                val orderIdStr = "EF$orderId"
+                firestore.collection("orders")
+                    .document(orderIdStr)
+                    .update(
+                        "status", "PREPARING",
+                        "updatedAt", FieldValue.serverTimestamp()
+                    )
+                    .await()
+            } catch (e: Exception) {
+                println("Error updating order status: ${e.message}")
+            }
+        }
     }
     
     fun markAsReady(orderId: Long) {
-        updateLocalOrderStatus(orderId, OrderStatus.OUT_FOR_DELIVERY)
+        viewModelScope.launch {
+            try {
+                val orderIdStr = "EF$orderId"
+                firestore.collection("orders")
+                    .document(orderIdStr)
+                    .update(
+                        "status", "OUT_FOR_DELIVERY",
+                        "updatedAt", FieldValue.serverTimestamp()
+                    )
+                    .await()
+            } catch (e: Exception) {
+                println("Error marking order as ready: ${e.message}")
+            }
+        }
     }
     
     private fun updateLocalOrderStatus(orderId: Long, newStatus: OrderStatus) {
